@@ -228,6 +228,11 @@ function renderChart() {
     const incomeData = transactions.map(tx => tx.type === 'income' ? tx.amount : 0);
     const expenseData = transactions.map(tx => tx.type === 'expense' ? tx.amount : 0);
 
+    // Determine colors based on active theme
+    const isDark = document.body.classList.contains('dark');
+    const textColor = isDark ? '#A0A5B5' : '#6B7080';
+    const gridColor = isDark ? '#2A2D3A' : '#E7E9F3';
+
     cashFlowChart = new Chart(canvas, {
         type: 'bar',
         data: {
@@ -248,7 +253,22 @@ function renderChart() {
             ]
         },
         options: {
-            responsive: true
+            responsive: true,
+            scales: {
+                x: {
+                    ticks: { color: textColor },
+                    grid: { color: gridColor }
+                },
+                y: {
+                    ticks: { color: textColor },
+                    grid: { color: gridColor }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: { color: textColor }
+                }
+            }
         }
     });
 }
@@ -282,6 +302,11 @@ function applyDarkMode() {
     const switchBtn = document.getElementById('darkModeSwitch');
     if (switchBtn) {
         switchBtn.classList.toggle('on', settings.darkMode);
+    }
+    
+    // Force the chart to redraw when theme changes
+    if (document.getElementById('cashFlowChart')) {
+        renderChart();
     }
 }
 
